@@ -1,5 +1,5 @@
 {
-    "name": "ncatanchin/mailgun",
+    "name": "ncatanchin/laravel-mailgun",
     "description": "Laravel package for sending mail via the Mailgun API",
     "keywords": [
         "mailgun",
