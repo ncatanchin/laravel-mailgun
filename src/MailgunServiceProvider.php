@@ -4,7 +4,7 @@ namespace Bogardo\Mailgun;
 
 use Bogardo\Mailgun\Contracts\Mailgun as MailgunContract;
 use Illuminate\Support\ServiceProvider;
-use Mailgun\Mailgun as MailgunApi;
+use Mailgun\Mailgun as Mailgun;
 
 class MailgunServiceProvider extends ServiceProvider
 {
@@ -44,13 +44,10 @@ class MailgunServiceProvider extends ServiceProvider
         $this->app->bind('mailgun', function () use ($config) {
             $clientAdapter = $this->app->make('mailgun.client');
 
-            $mg = new MailgunApi(
-                $config->get('mailgun.api_key'),
-                $clientAdapter,
-                $config->get('mailgun.api.endpoint')
-            );
-            $mg->setApiVersion($config->get('mailgun.api.version'));
-            $mg->setSslEnabled($config->get('mailgun.api.ssl', true));
+            $mg = Mailgun::create($config->get('mailgun.api_key'));
+
+            // $mg->setApiVersion($config->get('mailgun.api.version'));
+            // $mg->setSslEnabled($config->get('mailgun.api.ssl', true));
 
             return new Service($mg, $this->app->make('view'), $config);
         });

@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\View\Factory as View;
 use Mailgun\Mailgun;
+use Mailgun\Message\MessageBuilder;
 
 class Mailer
 {
@@ -56,18 +57,17 @@ class Mailer
      */
     public function send($view, array $data, Closure $callback, $message = null)
     {
-        $this->message = $message ?: new Message($this->mailgun->MessageBuilder(), $this->config);
+        $this->message = $message ?: new Message(new MessageBuilder(), $this->config);
 
         $this->callMessageBuilder($callback, $this->message);
         $this->renderBody($view, $data);
 
         $message = $this->message->getMessage();
-        $files = $this->message->getFiles();
+        // $files = $this->message->getFiles();
 
         $domain = $this->config->get('mailgun.domain');
-        $response = new Response($this->mailgun->post("{$domain}/messages", $message, $files));
+        return new Response($this->mailgun->messages()->send($domain, $message));
 
-        return $response;
     }
 
     /**
@@ -80,7 +80,7 @@ class Mailer
      */
     public function later($time, $view, array $data, Closure $callback)
     {
-        $message = new Message($this->mailgun->MessageBuilder(), $this->config);
+        $message = new Message(new MessageBuilder(), $this->config);
         $message->builder()
                 ->setDeliveryTime($this->parseTime($time), $this->config->get('app.timezone', 'UTC'));
 

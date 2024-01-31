@@ -3,13 +3,13 @@
 namespace Bogardo\Mailgun\Mail;
 
 use Illuminate\Contracts\Config\Repository as Config;
-use Mailgun\Messages\MessageBuilder;
+use Mailgun\Message\MessageBuilder;
 
 class Message
 {
 
     /**
-     * @var \Mailgun\Messages\MessageBuilder
+     * @var \Mailgun\Message\MessageBuilder
      */
     protected $messageBuilder;
 
