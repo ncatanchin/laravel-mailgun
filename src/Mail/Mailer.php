@@ -48,14 +48,15 @@ class Mailer
 
 
     /**
-     * @param string|array $view
-     * @param array        $data
-     * @param \Closure     $callback
-     * @param null         $message
+     * @param string        $domain
+     * @param string|array  $view
+     * @param array         $data
+     * @param \Closure      $callback
+     * @param null          $message
      *
-     * @return \Bogardo\Mailgun\Http\Response
+     * @return \Mailgun\Model\Message\SendResponse
      */
-    public function send($view, array $data, Closure $callback, $message = null)
+    public function send(string $domain, $view, array $data, Closure $callback, $message = null)
     {
         $this->message = $message ?: new Message(new MessageBuilder(), $this->config);
 
@@ -65,26 +66,30 @@ class Mailer
         $message = $this->message->getMessage();
         // $files = $this->message->getFiles();
 
-        $domain = $this->config->get('mailgun.domain');
-        return new Response($this->mailgun->messages()->send($domain, $message));
+        // $domain = $this->config->get('mailgun.domain');
+        // return new Response($this->mailgun->messages()->send($domain, $message));
+        $apiKey = $this->config->get('mailgun.api_key');
+        $mg = $this->mailgun::create($apiKey);
 
+        return $mg->messages()->send($domain, $message);
     }
 
     /**
-     * @param int|array|\DateTime|Carbon $time
-     * @param string|array               $view
-     * @param array                      $data
-     * @param \Closure                   $callback
+     * @param string                        $domiain
+     * @param int|array|\DateTime|Carbon    $time
+     * @param string|array                  $view
+     * @param array                         $data
+     * @param \Closure                      $callback
      *
-     * @return \Bogardo\Mailgun\Http\Response
+     * @return \Mailgun\Model\Message\SendResponse
      */
-    public function later($time, $view, array $data, Closure $callback)
+    public function later(string $domain, $time, $view, array $data, Closure $callback)
     {
         $message = new Message(new MessageBuilder(), $this->config);
         $message->builder()
                 ->setDeliveryTime($this->parseTime($time), $this->config->get('app.timezone', 'UTC'));
 
-        return $this->send($view, $data, $callback, $message);
+        return $this->send($domain, $view, $data, $callback, $message);
     }
 
     /**

@@ -48,22 +48,23 @@ class Service implements MailgunContract
     }
 
     /**
-     * @param string   $view
-     * @param array    $data
-     * @param \Closure $callback
+     * @param string    $domiain
+     * @param string    $view
+     * @param array     $data
+     * @param \Closure  $callback
      *
-     * @return \Bogardo\Mailgun\Http\Response
+     * @return \Mailgun\Model\Message\SendResponse
      */
-    public function send($view, array $data, Closure $callback)
+    public function send(string $domain, $view, array $data, Closure $callback)
     {
-        return $this->mailer->send($view, $data, $callback);
+        return $this->mailer->send($domain, $view, $data, $callback);
     }
 
     /**
      * @param string   $message
      * @param \Closure $callback
      *
-     * @return \Bogardo\Mailgun\Http\Response
+     * @return \Mailgun\Model\Message\SendResponse
      */
     public function raw($message, Closure $callback)
     {
@@ -71,16 +72,17 @@ class Service implements MailgunContract
     }
 
     /**
+     * @param string    $domain
      * @param int|array $time
      * @param string    $view
      * @param array     $data
      * @param \Closure  $callback
      *
-     * @return \Bogardo\Mailgun\Http\Response
+     * @return \Mailgun\Model\Message\SendResponse
      */
-    public function later($time, $view, array $data, Closure $callback)
+    public function later(string $domain, time, $view, array $data, Closure $callback)
     {
-        return $this->mailer->later($time, $view, $data, $callback);
+        return $this->mailer->later($domain, $time, $view, $data, $callback);
     }
 
     /**
