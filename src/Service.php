@@ -80,7 +80,7 @@ class Service implements MailgunContract
      *
      * @return \Mailgun\Model\Message\SendResponse
      */
-    public function later(string $domain, time, $view, array $data, Closure $callback)
+    public function later(string $domain, $time, $view, array $data, Closure $callback)
     {
         return $this->mailer->later($domain, $time, $view, $data, $callback);
     }
